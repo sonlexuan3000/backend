@@ -3,6 +3,7 @@ package database
 import (
     "fmt"
     "log"
+    "os"
     
     "gorm.io/driver/postgres"
     "gorm.io/gorm"
@@ -12,19 +13,16 @@ import (
     "backend/internal/models"
 )
 
-
 var DB *gorm.DB
 
-
 func Connect(cfg *config.Config) error {
-
     var dsn string
-
-    databaseURL := os.Getenv("DATABASE_URL") 
-    if databaseURL != "" { // railway db
+    
+    databaseURL := os.Getenv("DATABASE_URL")
+    if databaseURL != "" {
         dsn = databaseURL
-        log.Println("Using DATABASE_URL from environment")
-    } else { // local db
+        log.Println(" Using DATABASE_URL from environment")
+    } else {
         dsn = fmt.Sprintf(
             "host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
             cfg.DBHost,
@@ -33,7 +31,7 @@ func Connect(cfg *config.Config) error {
             cfg.DBPass,
             cfg.DBName,
         )
-        log.Println("Using local database config")
+        log.Println(" Using local database config")
     }
     
     var err error
@@ -48,13 +46,12 @@ func Connect(cfg *config.Config) error {
         return fmt.Errorf("failed to connect to database: %w", err)
     }
     
-    log.Println("Database connected successfully")
+    log.Println(" Database connected successfully")
     return nil
 }
 
-
 func Migrate() error {
-    log.Println("Running database migrations...")
+    log.Println(" Running database migrations...")
     return DB.AutoMigrate(
         &models.User{},
         &models.Topic{},
