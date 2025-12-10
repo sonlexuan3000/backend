@@ -51,11 +51,21 @@ func Connect(cfg *config.Config) error {
 }
 
 func Migrate() error {
-    log.Println(" Running database migrations...")
-    return DB.AutoMigrate(
+    log.Println("Running database migrations...")
+    
+    err := DB.AutoMigrate(
         &models.User{},
         &models.Topic{},
         &models.Post{},
         &models.Comment{},
+        &models.Vote{}, 
     )
+    
+    if err != nil {
+        return err
+    }
+    
+    DB.Exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_vote_post_user ON votes(post_id, user_id, deleted_at)")
+    
+    return nil
 }

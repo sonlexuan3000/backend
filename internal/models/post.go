@@ -17,4 +17,6 @@ type Post struct {
     UpdatedAt time.Time      `json:"updated_at"`
     DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
     Comments  []Comment      `gorm:"foreignKey:PostID" json:"comments,omitempty"`
+	VoteCount int            `gorm:"-" json:"vote_count"`
+    UserVote  int            `gorm:"-" json:"user_vote"`
 }

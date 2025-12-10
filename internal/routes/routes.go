@@ -17,20 +17,22 @@ func SetupRoutes(r *gin.Engine) {
     // API routes
     api := r.Group("/api")
     {
-        // Topics routes - DÙNG CÙNG TÊN PARAMETER ":id"
+        // Topics routes 
         api.GET("/topics", handlers.GetAllTopics)
-        api.GET("/topics/:id/posts", handlers.GetPostsByTopicID)  // ← ĐẶT TRƯỚC
+        api.GET("/topics/:id/posts", handlers.GetPostsByTopicID)  
         api.GET("/topics/:id", handlers.GetTopicByID)
         api.POST("/topics", middleware.AuthRequired(), handlers.CreateTopic)
         api.PUT("/topics/:id", middleware.AuthRequired(), handlers.UpdateTopic)
         api.DELETE("/topics/:id", middleware.AuthRequired(), handlers.DeleteTopic)
         
-        // Posts routes - DÙNG CÙNG TÊN PARAMETER ":id"
-        api.GET("/posts/:id/comments", handlers.GetCommentsByPostID)  // ← ĐẶT TRƯỚC
+        // Posts routes 
+        api.GET("/posts/:id/comments", handlers.GetCommentsByPostID)  
         api.GET("/posts/:id", handlers.GetPostByID)
         api.POST("/posts", middleware.AuthRequired(), handlers.CreatePost)
         api.PUT("/posts/:id", middleware.AuthRequired(), handlers.UpdatePost)
         api.DELETE("/posts/:id", middleware.AuthRequired(), handlers.DeletePost)
+		api.POST("/posts/:id/vote", middleware.AuthRequired(), handlers.VotePost)
+		api.DELETE("/posts/:id/vote", middleware.AuthRequired(), handlers.UnvotePost)
         
         // Comments routes
         api.GET("/comments/:id", handlers.GetCommentByID)

@@ -12,7 +12,17 @@ func GetPostsByTopicID(topicID uint) ([]models.Post, error) {
         Where("topic_id = ?", topicID).
         Order("created_at DESC").
         Find(&posts)
-    return posts, result.Error
+
+    if result.Error != nil {
+        return nil, result.Error
+    }
+    
+    for i := range posts {
+        voteCount, _ := GetVoteCount(posts[i].ID)
+        posts[i].VoteCount = voteCount
+    }
+    
+    return posts, nil
 }
 
 func GetPostByID(id uint) (*models.Post, error) {
@@ -21,8 +31,29 @@ func GetPostByID(id uint) (*models.Post, error) {
         Preload("Creator").
         Preload("Topic").
         First(&post, id)
-    return &post, result.Error
+
+    if result.Error != nil {
+        return nil, result.Error
+    }
+    
+    voteCount, _ := GetVoteCount(id)
+    post.VoteCount = voteCount
+    
+    return &post, nil
 }
+
+func GetPostByIDWithUserVote(id, userID uint) (*models.Post, error) {
+    post, err := GetPostByID(id)
+    if err != nil {
+        return nil, err
+    }
+    
+    userVote, _ := GetUserVote(id, userID)
+    post.UserVote = userVote
+    
+    return post, nil
+}
+
 
 func CreatePost(post *models.Post) error {
     return database.DB.Create(post).Error
