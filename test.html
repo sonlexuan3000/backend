@@ -1,0 +1,72 @@
+@baseURL = http://localhost:8080
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6InRlc3R1c2VyIiwiZXhwIjoxNzY1MzM3NzU3LCJpYXQiOjE3NjUyNTEzNTd9.NO80Mwdv1OvrCw0Z7jiSTx6xJvhnKBhCioGwirOGOeM
+
+### 1. Login
+POST {{baseURL}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "alice"
+}
+
+### 2. Create Topic
+POST {{baseURL}}/api/topics
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "title": "Programming Discussion",
+  "description": "Talk about coding"
+}
+
+### 3. Create Post in Topic
+POST {{baseURL}}/api/posts
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "topic_id": 1,
+  "title": "Best practices for Go",
+  "content": "What are your favorite Go programming patterns?"
+}
+
+### 4. Get Posts in Topic
+GET {{baseURL}}/api/topics/1/posts
+
+### 5. Create Comment on Post
+POST {{baseURL}}/api/comments
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "post_id": 1,
+  "content": "I love using interfaces for clean architecture!"
+}
+
+### 6. Reply to Comment
+POST {{baseURL}}/api/comments
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "post_id": 1,
+  "parent_id": 1,
+  "content": "Totally agree! Dependency injection is key."
+}
+
+### 7. Get All Comments (with nested replies)
+GET {{baseURL}}/api/posts/1/comments
+
+### 8. Update Comment
+PUT {{baseURL}}/api/comments/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "content": "I love using interfaces for clean architecture! EDIT: Also context.Context!"
+}
+
+### 9. Delete Comment
+DELETE {{baseURL}}/api/comments/2
+Authorization: Bearer {{token}}
+```
